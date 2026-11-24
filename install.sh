@@ -134,19 +134,29 @@ install_V2bX() {
     if  [ $# == 0 ] ;then
         last_version="v0.0.13"
         echo -e "${green}默认使用适配 Xboard 的防断流稳定版本：${last_version}，开始安装${plain}"
-        wget --no-check-certificate -N --progress=bar -O /usr/local/V2bX/V2bX-linux.zip https://github.com/wyx2685/V2bX/releases/download/${last_version}/V2bX-linux-${arch}.zip
+        url="https://github.com/Crvesoft/V2bX-script/releases/download/${last_version}/V2bX-linux-${arch}.zip"
+        echo -e "从 Crvesoft 永久归档源下载: ${url}"
+        wget --no-check-certificate -N --progress=bar -O /usr/local/V2bX/V2bX-linux.zip ${url}
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 V2bX 失败，请确保你的服务器能够下载 Github 的文件${plain}"
-            exit 1
+            echo -e "${yellow}自建归档源下载失败，尝试原作者备用源...${plain}"
+            wget --no-check-certificate -N --progress=bar -O /usr/local/V2bX/V2bX-linux.zip https://github.com/wyx2685/V2bX/releases/download/${last_version}/V2bX-linux-${arch}.zip
+            if [[ $? -ne 0 ]]; then
+                echo -e "${red}下载 V2bX 失败，请确保你的服务器能够下载 Github 的文件${plain}"
+                exit 1
+            fi
         fi
     else
         last_version=$1
-        url="https://github.com/wyx2685/V2bX/releases/download/${last_version}/V2bX-linux-${arch}.zip"
-        echo -e "开始安装 V2bX $1"
+        url="https://github.com/Crvesoft/V2bX-script/releases/download/${last_version}/V2bX-linux-${arch}.zip"
+        echo -e "开始安装 V2bX $1 (从 Crvesoft 永久归档源下载)"
         wget --no-check-certificate -N --progress=bar -O /usr/local/V2bX/V2bX-linux.zip ${url}
         if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 V2bX $1 失败，请确保此版本存在${plain}"
-            exit 1
+            echo -e "${yellow}自建归档源未找到此版本，尝试原作者备用源...${plain}"
+            wget --no-check-certificate -N --progress=bar -O /usr/local/V2bX/V2bX-linux.zip https://github.com/wyx2685/V2bX/releases/download/${last_version}/V2bX-linux-${arch}.zip
+            if [[ $? -ne 0 ]]; then
+                echo -e "${red}下载 V2bX $1 失败，请确保此版本存在${plain}"
+                exit 1
+            fi
         fi
     fi
 
